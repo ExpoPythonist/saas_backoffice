@@ -1,0 +1,42 @@
+runtime: python37
+entrypoint: gunicorn -b :$PORT django_hasura.wsgi --timeout 150
+env: standard
+
+handlers:
+- url: /static
+  static_dir: static/
+
+- url: /.*
+  script: auto
+
+env_variables:
+  DJANGO_SETTINGS_MODULE: 'django_hasura.settings'
+
+  DEBUG_ENABLED: 'True'
+  DEVELOPMENT_MODE: 'True'
+
+  PROJECT_ID: 'django-saas-237719'
+  GAE_APPLICATION: 'True'
+
+  HASURA_SAAS_HOST: '/cloudsql/django-saas-237719:us-central1:django-saas'
+  HASURA_SAAS_DATABASE: 'django-saas'
+  HASURA_SAAS_USER: 'django-saas'
+  HASURA_SAAS_PASSWORD: 'r1zEAflGfKLl1Fb3'
+  HASURA_SAAS_PORT: '5432'
+
+  HASURA_URL: 'http://35.200.242.129'
+  HASURA_SAAS_ACCESS_KEY: 'mybigsecret'
+
+  MAIN_DOMAIN_URL: 'django-saas-237719.appspot.com'
+  # REMEMBER: THIS IS SUBJECT TO CHANGE ONCE WE ADD A DOMAIN NAME
+
+runtime_config:
+  python_version: 3
+
+manual_scaling:
+  instances: 1
+
+resources:
+  cpu: 1
+  memory_gb: 0.6
+  disk_size_gb: 10

@@ -1,0 +1,21 @@
+gunicorn
+aniso8601==3.0.2
+certifi==2019.3.9
+chardet==3.0.4
+Django==2.1.5
+django-cors-headers==2.5.0
+django-tenant-schemas==1.9.0
+djangorestframework==3.9.1
+djangorestframework-simplejwt==4.1.0
+idna==2.8
+promise==2.2.1
+psycopg2==2.7.7
+PyJWT==1.7.1
+pytz==2018.9
+requests==2.21.0
+Rx==1.6.1
+singledispatch==3.4.0.3
+six==1.12.0
+urllib3==1.24.1
+django-rest-swagger==2.2.0
+-e git+http://github.com/damey2011/django-cloud-tasks.git#egg=django_cloud_tasks

@@ -1,0 +1,58 @@
+version: '3'
+services:
+    web:
+        restart: always
+        build: .
+        depends_on:
+          - db
+        expose:
+          - "8000"
+        command: gunicorn django_hasura.wsgi -b 0.0.0.0:8000
+        networks:
+         - tickethub_net
+
+    db:
+        build: ./postgres
+        restart: unless-stopped
+        expose:
+            - "5432"
+        environment:   # will be used by the init script
+            LC_ALL: C.UTF-8
+            POSTGRES_USER: django-saas
+            POSTGRES_PASSWORD: r1zEAflGfKLl1Fb3
+            POSTGRES_DB: django-saas
+        volumes:
+            - pgdata:/var/lib/postgresql/data/  # persist container's db data to local pgdata/ (mounted)
+        networks:
+         - tickethub_net
+    nginx:
+        restart: always
+        build: ./nginx/
+        ports:
+          - "8000:80"
+        links:
+          - web
+        networks:
+         - tickethub_net
+    hasura:
+        restart: always
+        image: hasura/graphql-engine:latest@sha256:287f1083940be62ec487c32e463d74714f39eaa198453983f291b9c2bfec24ec
+        restart: always
+        environment:
+            HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+            HASURA_GRAPHQL_DATABASE_URL: postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+            # HASURA_GRAPHQL_AUTH_HOOK: http://@host.docker.internal":8000""${HASURA_SAAS_AUTH_WEBHOOK}" \
+            # HASURA_GRAPHQL_ACCESS_KEY: "${HASURA_SAAS_ACCESS_KEY}"
+        ports:
+            - "8080:8080"
+        networks:
+            - tickethub_net
+
+volumes:
+  pgdata:
+
+networks:
+  tickethub_net:
+    external:
+      name: tickethub_net
+
